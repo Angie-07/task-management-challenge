@@ -1,0 +1,21 @@
+{
+  "colors": {
+    "Neutral-1": "#ffffff",
+    "Neutral-2": "#94979a",
+    "Neutral-3": "#393d41",
+    "Neutral-4": "#2c2f33",
+    "Neutral-5": "#94979a",
+    "Primary-1": "#f4ccc8",
+    "Primary-2": "#eba59e",
+    "Primary-3": "#e27d73",
+    "Primary-4": "#da584b",
+    "Secondary-1": "#c8e1bc",
+    "Secondary-2": "#aad199",
+    "Secondary-3": "#8dc275",
+    "Secondary-4": "#70b252",
+    "Tertiary-1": "#f9eed7",
+    "Tertiary-2": "#f2daab",
+    "Tertiary-3": "#ebc77f",
+    "Tertiary-4": "#e5b454"
+  }
+}
