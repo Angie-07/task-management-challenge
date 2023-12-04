@@ -1,9 +1,12 @@
 import styled from "styled-components";
+import MainContainer from "../../components/MainContainer";
+import Sidebar from "../../components/Sidebar";
 
 const Home = () => {
   return (
     <StyledHome>
-      <p>hola</p>
+      <Sidebar />
+      <MainContainer />
     </StyledHome>
   );
 };
@@ -11,7 +14,7 @@ const Home = () => {
 export default Home;
 
 const StyledHome = styled.div`
-  background-color: #2c2f33;
+  background-color:${(props)=>props.theme.colors.Neutral5};
   display: flex;
   flex-direction: row;
   width: 100%;
