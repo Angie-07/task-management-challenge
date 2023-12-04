@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import { Task } from "../../../../shared/schema/schema";
 import TaskComponent from "../Task/TaskComponent";
 
@@ -8,15 +9,22 @@ type ListTasksProps = {
 
 const ListTasks = ({ listTasks, title }: ListTasksProps) => {
   const tasks = listTasks.filter((item) => item.status === title);
-    console.log(tasks)
+  console.log(tasks);
   return (
-    <div>
+    <StyledListTasks>
       <h1>{title}</h1>
       {tasks.map((task, key) => {
         return <TaskComponent key={key} task={task} />;
       })}
-    </div>
+    </StyledListTasks>
   );
 };
 
 export default ListTasks;
+
+const StyledListTasks = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+`;

@@ -61,9 +61,6 @@ const TaskComponent = ({ task }: TasksComponentProps) => {
     return momentString.format("D MMMM, YYYY");
   };
 
-  const tags = (tag: TaskTag) => {
-    
-  };
 
   return (
     <StyledTask>
@@ -119,6 +116,7 @@ const StyledTask = styled(Flex)`
   gap: 16px;
   background: ${(props) => props.theme.colors.Neutral4};
   color: ${(props) => props.theme.colors.Neutral1};
+  padding: 10px;
 
   .flex {
     width: 100%;
