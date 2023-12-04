@@ -46,6 +46,7 @@ const StyledTaskCardContainer = styled.div`
   flex-direction: row;
   gap: 15px;
   color: ${(props) => props.theme.colors.Neutral1};
+  overflow-x: auto;
   h1 {
     font-size: ${(props) => props.theme.fonts.desktop.body.bold.L.fontSize};
     font-weight: ${(props) => props.theme.fonts.desktop.body.bold.L.fontWeight};

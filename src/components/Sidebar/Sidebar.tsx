@@ -62,7 +62,7 @@ function Sidebar() {
 export default Sidebar;
 
 const StyledSidebar = styled.div`
-  width: 16%;
+  width: 232px;
   height: calc(100vh - 40px);
   background-color: ${(props) => props.theme.colors.Neutral4};
   display: flex;

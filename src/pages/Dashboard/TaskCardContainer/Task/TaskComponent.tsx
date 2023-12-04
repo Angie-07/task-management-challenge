@@ -1,4 +1,4 @@
-import moment from 'moment';
+import moment from "moment";
 import { Flex, Dropdown, MenuProps, Tag } from "antd";
 import {
   EllipsisOutlined,
@@ -11,12 +11,11 @@ import {
 } from "@ant-design/icons";
 import styled from "styled-components";
 import Avatar from "../../../../shared/assets/avatar.jpg";
-import { PointEstimate, Task } from "../../../../shared/schema/schema";
+import { PointEstimate, Task, TaskTag } from "../../../../shared/schema/schema";
 
 type TasksComponentProps = {
   task: Task;
 };
-
 
 const TaskComponent = ({ task }: TasksComponentProps) => {
   const items: MenuProps["items"] = [
@@ -48,19 +47,23 @@ const TaskComponent = ({ task }: TasksComponentProps) => {
     },
   ];
 
-  const points = (pointEstimate:PointEstimate) =>{
-    if(pointEstimate==="ZERO") return 0
-    if(pointEstimate==="ONE") return 1
-    if(pointEstimate==="TWO") return 2
-    if(pointEstimate==="FOUR") return 4
-    if(pointEstimate==="EIGHT") return 8
-    return ""
-  }
+  const points = (pointEstimate: PointEstimate) => {
+    if (pointEstimate === "ZERO") return 0;
+    if (pointEstimate === "ONE") return 1;
+    if (pointEstimate === "TWO") return 2;
+    if (pointEstimate === "FOUR") return 4;
+    if (pointEstimate === "EIGHT") return 8;
+    return "";
+  };
 
-  const date = (date:string)=>{
-    const momentString =  moment(date);
-    return momentString.format('D MMMM, YYYY')
-  }
+  const date = (date: string) => {
+    const momentString = moment(date);
+    return momentString.format("D MMMM, YYYY");
+  };
+
+  const tags = (tag: TaskTag) => {
+    
+  };
 
   return (
     <StyledTask>
@@ -79,10 +82,15 @@ const TaskComponent = ({ task }: TasksComponentProps) => {
           <p>{date(task.dueDate)}</p>
         </div>
       </Flex>
-      <Flex className="flex-tag">
-        <Tag className="ios">IOS APP</Tag>
-        <Tag className="android">ANDROID</Tag>
-      </Flex>
+      <Flex className="flex-tag">{
+        task.tags.map((item)=> [
+        (item==="ANDROID") ? <Tag key="1" className="android">{item}</Tag> : null,
+        (item==="IOS") ? <Tag key="2" className="ios">{item}</Tag> : null,
+        (item==="NODE_JS") ? <Tag key="3" className="node">{item}</Tag> : null,
+        (item==="RAILS") ? <Tag key="4" className="rails">{item}</Tag> : null,
+        (item==="REACT") ? <Tag key="5" className="react">{item}</Tag> : null,
+        ])
+      }</Flex>
       <Flex className="flex">
         <div className="avatar">
           <img src={Avatar} alt="Avatar" />
@@ -155,6 +163,21 @@ const StyledTask = styled(Flex)`
     border: none;
     background-color: #e5b4541a;
   }
+  .flex-tag .node {
+    color: #d808d8;
+    border: none;
+    background-color: #e554de3b;
+  }
+  .flex-tag .react {
+    color: #0597c7;
+    border: none;
+    background-color: #56e7d44e;
+  }
+  .flex-tag .rails {
+    color: #ad0c0c;
+    border: none;
+    background-color: #e5545461;
+  }
   .date {
     background-color: #94979a1a;
     width: 175px;
@@ -180,22 +203,4 @@ const StyledTask = styled(Flex)`
     gap: 8px;
   }
 
-  /* display: "flex";
-  flex-direction: "row";
-  width: 348px;
-  height: 208px;
-  background: #2c2f33;
-  color: #ffff;
-  border: none;
-
-  h2{
-    display: flex;
-    border: 1px solid white;
-    width: 50%;
-  }
-  .drop{
-    display: flex;
-    border: 1px solid white;
-    width: 40%;
-  } */
 `;

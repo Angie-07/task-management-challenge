@@ -29,10 +29,10 @@ const StyledDashboard = styled.div`
 
   .container {
     height: calc(100vh - 40px);
+    width: calc(100% - 272px);
     display: flex;
     flex-direction: column;
     gap: 20px;
-    width: 100%;
     margin-top: 20px;
     margin-right: 20px;
     margin-bottom: 20px;
