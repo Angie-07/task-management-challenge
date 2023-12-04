@@ -18,7 +18,9 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    // "types": ["styled-components"],
+    // "typeRoots": ["node_modules/@types", "typings"]
   },
   "include": [
     "src"
