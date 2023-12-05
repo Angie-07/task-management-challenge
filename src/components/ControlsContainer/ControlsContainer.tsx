@@ -182,8 +182,7 @@ const ControlsContainer = () => {
                 <Option value="option2">
                   <Checkbox value="option2">Option 2</Checkbox>
                 </Option>
-                <Option value
-                ="option3">
+                <Option value="option3">
                   <Checkbox value="option3">Option 3</Checkbox>
                 </Option>
               </Select>
