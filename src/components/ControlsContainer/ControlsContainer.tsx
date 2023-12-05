@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import type { Dayjs } from "dayjs";
@@ -38,7 +38,6 @@ const ControlsContainer = () => {
   const [selectedValue, setSelectedValue] = useState(() => dayjs("2017-01-25"));
   // const { register, handleSubmit, errors } = useForm();
 
-  
   const onSelect = (newValue: Dayjs) => {
     setValue(newValue);
     setSelectedValue(newValue);
@@ -56,6 +55,10 @@ const ControlsContainer = () => {
   };
   const handleChange = (value: string) => {
     console.log(`valor ${value}`);
+  };
+
+  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
+    console.log(date, dateString);
   };
 
   const validationSchema: Yup.ObjectSchema<CreateTaskInput> =
@@ -76,6 +79,7 @@ const ControlsContainer = () => {
     register,
     handleSubmit,
     reset,
+    control,
     formState: { errors },
   } = useForm<CreateTaskInput>({
     resolver: yupResolver(validationSchema),
@@ -121,114 +125,78 @@ const ControlsContainer = () => {
         }}
       >
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="form-group">
-            <input
-              type="text"
-              placeholder="Task title"
-              {...register("name")}
-              className={`form-control ${errors.name ? "is-invalid" : ""}`}
-            />
-            <div className="invalid-feedback">{errors.name?.message}</div>
-          </div>
-
-          <div className="form-group">
-            <Select
-              {...register("pointEstimate")}
-              className={`form-control ${
-                errors.pointEstimate ? "is-invalid" : ""
-              }`}
-              style={{ width: 150 }}
-              defaultValue="Label"
-              suffixIcon=""
-              onChange={handleChange}
-            >
-              {/* <Checkbox.Group value={selectedItems} onChange={handleCheckboxChange}> */}
-              <Option value="option1">
-                <Checkbox value="option1">Option 1</Checkbox>
-              </Option>
-              <Option value="option2">
-                <Checkbox value="option2">Option 2</Checkbox>
-              </Option>
-              <Option value="option3">
-                <Checkbox value="option3">Option 3</Checkbox>
-              </Option>
-              {/* </Checkbox.Group> */}
-            </Select>
-            <div className="invalid-feedback">
-              {errors.pointEstimate?.message}
-            </div>
-          </div>
-
-          <div className="form-group">
-            <Select
-              {...register("assigneeId")}
-              className={`form-control ${
-                errors.assigneeId ? "is-invalid" : ""
-              }`}
-              defaultValue="Assignee"
-              suffixIcon=""
-              style={{ width: 120 }}
-              onChange={handleChange}
-              options={[
-                { value: "disabled", label: "Assignee", disabled: true },
-                { value: 0, label: "Jerome Bell" },
-                { value: 1, label: "Robert Fox" },
-                { value: 2, label: "Marvin McKinney" },
-              ]}
-            />
-            <div className="invalid-feedback">{errors.assigneeId?.message}</div>
-          </div>
-
-          <div className="form-group">
-            <input
-              type="text"
-              {...register("tags")}
-              className={`form-control ${errors.tags ? "is-invalid" : ""}`}
-            />
-            <div className="invalid-feedback">{errors.tags?.message}</div>
-          </div>
-
-          <div className="form-group">
-            <Select
-              {...register("dueDate")}
-              className={`form-control ${errors.dueDate ? "is-invalid" : ""}`}
-              defaultValue="Due Date"
-              suffixIcon=""
-              style={{ width: 180 }}
-              onChange={handleChange}
-              // options={[
-              //   { value: "disabled", label: "Assignee", disabled: true },
-              //   { value: 0, label: "Jerome Bell" },
-              //   { value: 1, label: "Robert Fox" },
-              //   { value: 2, label: "Marvin McKinney" },
-              // ]}
-            >
-              <Option className="wrapperStyle" value="option1">
-                {/* <div className="wrapperStyle"> */}
-                <Calendar
-                  fullscreen={false}
-                  value={value}
-                  onSelect={onSelect}
-                  onPanelChange={onPanelChange}
-                />
-                {/* </div> */}
-              </Option>
-            </Select>
-
-            <div className="invalid-feedback">{errors.dueDate?.message}</div>
-          </div>
+          <Controller
+            control={control}
+            name="name"
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <input placeholder="Task title" onChange={onChange} />
+            )}
+          />
+          <Controller
+            control={control}
+            name="pointEstimate"
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <Select
+                onChange={onChange}
+                onBlur={onBlur}
+                style={{ width: 120 }}
+                options={[
+                  { value: "disabled", label: "PointEstimate", disabled: true },
+                  { value: 0, label: "1 Points" },
+                  { value: 1, label: "2 Points" },
+                  { value: 2, label: "4 Points" },
+                ]}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="assigneeId"
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <Select
+                onChange={onChange}
+                onBlur={onBlur}
+                style={{ width: 120 }}
+                options={[
+                  { value: "disabled", label: "assigneeId", disabled: true },
+                  { value: 0, label: "Jerome Bell" },
+                  { value: 1, label: "Robert Fox" },
+                  { value: 2, label: "Marvin McKinney" },
+                ]}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="tags"
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <Select
+                style={{ width: 150 }}
+                defaultValue="Label"
+                suffixIcon=""
+                onChange={onChange}
+              >
+                <Option value="option1">
+                  <Checkbox value="option1" >Option 1</Checkbox>
+                </Option>
+                <Option value="option2">
+                  <Checkbox value="option2">Option 2</Checkbox>
+                </Option>
+                <Option value="option3">
+                  <Checkbox value="option3">Option 3</Checkbox>
+                </Option>
+              </Select>
+            )}
+          />
+          <Controller
+            control={control}
+            name="assigneeId"
+            render={({ field: { onChange, onBlur, value, ref } }) => (
+              <DatePicker onChange={onChange} />
+            )}
+          />
+          
           {/* <div className="form-group">
-            <input
-              type="text"
-              {...register("assigneeId")}
-              className={`form-control ${
-                errors.assigneeId ? "is-invalid" : ""
-              }`}
-            />
-            <div className="invalid-feedback">{errors.assigneeId?.message}</div>
-          </div> */}
-
-          <div className="form-group">
             <button type="submit" className="btn btn-primary">
               Register
             </button>
@@ -239,7 +207,7 @@ const ControlsContainer = () => {
             >
               Reset
             </button>
-          </div>
+          </div> */}
         </form>
       </Modal>
       {/* </ConfigProvider> */}
