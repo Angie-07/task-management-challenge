@@ -46,7 +46,7 @@ export type Query = {
 
 export type Task = {
   assignee?: User,
-  createdAt: String,
+  createdAt: string,
   creator: User,
   dueDate: string,
   id: string,
@@ -59,12 +59,12 @@ export type Task = {
 
 export type User = {
   avatar?: string
-  createdAt: String
+  createdAt: string
   email: string
   fullName: string
   id: string,
   type: UserType,
-  updatedAt: String
+  updatedAt: string
 }
 
 export enum Status {

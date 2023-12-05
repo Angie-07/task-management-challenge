@@ -1,3 +1,6 @@
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 import {
@@ -5,38 +8,65 @@ import {
   MenuOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import { Button, Calendar, Checkbox, Flex, Modal, Select } from "antd";
+import {
+  Button,
+  Checkbox,
+  DatePicker,
+  DatePickerProps,
+  Flex,
+  Modal,
+  Select,
+} from "antd";
 import { useState } from "react";
 import styled from "styled-components";
+import {
+  PointEstimate,
+  Task,
+  TaskTag,
+  User,
+  UserType,
+  Status,
+  CreateTaskInput,
+} from "../../shared/schema/schema";
+
 const { Option } = Select;
 
 const ControlsContainer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  // const { register, handleSubmit, errors } = useForm();
 
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  const handleChange = (value: string) => {
-    console.log(`selected ${value}`);
-  };
-  //
-  const [value, setValue] = useState(() => dayjs("2017-01-25"));
-  const [selectedValue, setSelectedValue] = useState(() => dayjs("2017-01-25"));
 
-  const onSelect = (newValue: Dayjs) => {
-    setValue(newValue);
-    setSelectedValue(newValue);
-  };
+  const validationSchema: Yup.ObjectSchema<CreateTaskInput> =
+    Yup.object().shape({
+      assigneeId: Yup.string(),
+      dueDate: Yup.string().required(),
+      name: Yup.string().required(),
+      pointEstimate: Yup.string()
+        .oneOf(Object.values(PointEstimate))
+        .required(),
+      status: Yup.string().oneOf(Object.values(Status)).required(),
+      tags: Yup.array()
+        .of(Yup.string().required().oneOf(Object.values(TaskTag)))
+        .required(),
+    });
 
-  const onPanelChange = (newValue: Dayjs) => {
-    setValue(newValue);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<CreateTaskInput>({
+    resolver: yupResolver(validationSchema),
+  });
+
+  const onSubmit = (data: CreateTaskInput) => {
+    console.log(JSON.stringify(data, null, 2));
   };
 
   return (
@@ -63,89 +93,82 @@ const ControlsContainer = () => {
       </Button>
       <Modal
         open={isModalOpen}
-        okText="Create"
-        onOk={handleOk}
+        // okText="Create"
+        // onOk={handleOk}
         onCancel={handleCancel}
-        okButtonProps={{ style: { backgroundColor: "#da584b" } }}
-        cancelButtonProps={{
-          style: { border: "none", backgroundColor: "#393d41", color: "#ffff" },
-        }}
+        // okButtonProps={{ style: { backgroundColor: "#da584b" } }}
+        // cancelButtonProps={{
+        //   style: { border: "none", backgroundColor: "#393d41", color: "#ffff" },
+        // }}
         styles={{
           content: { backgroundColor: "#393d41" },
         }}
       >
-        <input type="text" placeholder="Task title" />
-        <Flex>
-          <Select
-            defaultValue="Estimate"
-            suffixIcon=""
-            style={{ width: 120 }}
-            onChange={handleChange}
-            options={[
-              { value: "disabled", label: "Estimate", disabled: true },
-              { value: 0, label: "0 Points" },
-              { value: 1, label: "1 Points" },
-              { value: 2, label: "2 Points" },
-              { value: 2, label: "4 Points" },
-              { value: 2, label: "8 Points" },
-            ]}
-          />
-          <Select
-            defaultValue="Assignee"
-            suffixIcon=""
-            style={{ width: 120 }}
-            onChange={handleChange}
-            options={[
-              { value: "disabled", label: "Assignee", disabled: true },
-              { value: 0, label: "Jerome Bell" },
-              { value: 1, label: "Robert Fox" },
-              { value: 2, label: "Marvin McKinney" },
-            ]}
-          />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <div className="form-group">
+            <input
+              type="text"
+              {...register("name")}
+              className={`form-control ${errors.name ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.name?.message}</div>
+          </div>
 
-          <Select
-            style={{ width: 150 }}
-            defaultValue="Label"
-            suffixIcon=""
-            onChange={handleChange}
-          >
-            {/* <Checkbox.Group value={selectedItems} onChange={handleCheckboxChange}> */}
-            <Option value="option1">
-              <Checkbox value="option1">Option 1</Checkbox>
-            </Option>
-            <Option value="option2">
-              <Checkbox value="option2">Option 2</Checkbox>
-            </Option>
-            <Option value="option3">
-              <Checkbox value="option3">Option 3</Checkbox>
-            </Option>
-            {/* </Checkbox.Group> */}
-          </Select>
+          <div className="form-group">
+            <input
+              type="text"
+              {...register("pointEstimate")}
+              className={`form-control ${
+                errors.pointEstimate ? "is-invalid" : ""
+              }`}
+            />
+            <div className="invalid-feedback">
+              {errors.pointEstimate?.message}
+            </div>
+          </div>
 
-          <Select
-            defaultValue="Due Date"
-            suffixIcon=""
-            style={{ width: 180 }}
-            onChange={handleChange}
-            // options={[
-            //   { value: "disabled", label: "Assignee", disabled: true },
-            //   { value: 0, label: "Jerome Bell" },
-            //   { value: 1, label: "Robert Fox" },
-            //   { value: 2, label: "Marvin McKinney" },
-            // ]}
-          >
-            <Option  className="wrapperStyle" value="option1">
-              {/* <div className="wrapperStyle"> */}
-                <Calendar
-                fullscreen={false}
-                  value={value}
-                  onSelect={onSelect}
-                  onPanelChange={onPanelChange}
-                />
-              {/* </div> */}
-            </Option>
-          </Select>
-        </Flex>
+          <div className="form-group">
+            <input
+              type="text"
+              {...register("assigneeId")}
+              className={`form-control ${
+                errors.assigneeId ? "is-invalid" : ""
+              }`}
+            />
+            <div className="invalid-feedback">{errors.assigneeId?.message}</div>
+          </div>
+
+          <div className="form-group">
+            <input
+              type="password"
+              {...register("tags")}
+              className={`form-control ${errors.tags ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.tags?.message}</div>
+          </div>
+
+          <div className="form-group">
+            <input
+              type="password"
+              {...register("dueDate")}
+              className={`form-control ${errors.dueDate ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.dueDate?.message}</div>
+          </div>
+
+          <div className="form-group">
+            <button type="submit" className="btn btn-primary">
+              Register
+            </button>
+            <button
+              type="button"
+              onClick={() => reset()}
+              className="btn btn-warning float-right"
+            >
+              Reset
+            </button>
+          </div>
+        </form>
       </Modal>
       {/* </ConfigProvider> */}
     </StyledControlsContainer>
@@ -177,7 +200,7 @@ const StyledControlsContainer = styled.div`
       background-color: ${(props) => props.theme.colors.Primary4};
     }
   }
-  .wrapperStyle{
+  .wrapperStyle {
     width: 60px;
   }
 `;
