@@ -9,7 +9,6 @@ type ListTasksProps = {
 
 const ListTasks = ({ listTasks, title }: ListTasksProps) => {
   const tasks = listTasks.filter((item) => item.status === title);
-  console.log(tasks);
   return (
     <StyledListTasks>
       <h1>{title}</h1>

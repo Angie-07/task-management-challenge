@@ -10,6 +10,7 @@ import {
 } from "@ant-design/icons";
 import {
   Button,
+  Calendar,
   Checkbox,
   DatePicker,
   DatePickerProps,
@@ -33,13 +34,27 @@ const { Option } = Select;
 
 const ControlsContainer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [value, setValue] = useState(() => dayjs("2017-01-25"));
+  const [selectedValue, setSelectedValue] = useState(() => dayjs("2017-01-25"));
   // const { register, handleSubmit, errors } = useForm();
+
+  const onSelect = (newValue: Dayjs) => {
+    setValue(newValue);
+    setSelectedValue(newValue);
+  };
+
+  const onPanelChange = (newValue: Dayjs) => {
+    setValue(newValue);
+  };
 
   const showModal = () => {
     setIsModalOpen(true);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
+  };
+  const handleChange = (value: string) => {
+    console.log(`valor ${value}`);
   };
 
   const validationSchema: Yup.ObjectSchema<CreateTaskInput> =
@@ -108,6 +123,7 @@ const ControlsContainer = () => {
           <div className="form-group">
             <input
               type="text"
+              placeholder="Task title"
               {...register("name")}
               className={`form-control ${errors.name ? "is-invalid" : ""}`}
             />
@@ -115,19 +131,92 @@ const ControlsContainer = () => {
           </div>
 
           <div className="form-group">
-            <input
-              type="text"
+            <Select
               {...register("pointEstimate")}
               className={`form-control ${
                 errors.pointEstimate ? "is-invalid" : ""
               }`}
-            />
+              style={{ width: 150 }}
+              defaultValue="Label"
+              suffixIcon=""
+              onChange={handleChange}
+            >
+              {/* <Checkbox.Group value={selectedItems} onChange={handleCheckboxChange}> */}
+              <Option value="option1">
+                <Checkbox value="option1">Option 1</Checkbox>
+              </Option>
+              <Option value="option2">
+                <Checkbox value="option2">Option 2</Checkbox>
+              </Option>
+              <Option value="option3">
+                <Checkbox value="option3">Option 3</Checkbox>
+              </Option>
+              {/* </Checkbox.Group> */}
+            </Select>
             <div className="invalid-feedback">
               {errors.pointEstimate?.message}
             </div>
           </div>
 
           <div className="form-group">
+            <Select
+              {...register("assigneeId")}
+              className={`form-control ${
+                errors.assigneeId ? "is-invalid" : ""
+              }`}
+              defaultValue="Assignee"
+              suffixIcon=""
+              style={{ width: 120 }}
+              onChange={handleChange}
+              options={[
+                { value: "disabled", label: "Assignee", disabled: true },
+                { value: 0, label: "Jerome Bell" },
+                { value: 1, label: "Robert Fox" },
+                { value: 2, label: "Marvin McKinney" },
+              ]}
+            />
+            <div className="invalid-feedback">{errors.assigneeId?.message}</div>
+          </div>
+
+          <div className="form-group">
+            <input
+              type="text"
+              {...register("tags")}
+              className={`form-control ${errors.tags ? "is-invalid" : ""}`}
+            />
+            <div className="invalid-feedback">{errors.tags?.message}</div>
+          </div>
+
+          <div className="form-group">
+            <Select
+              {...register("dueDate")}
+              className={`form-control ${errors.dueDate ? "is-invalid" : ""}`}
+              defaultValue="Due Date"
+              suffixIcon=""
+              style={{ width: 180 }}
+              onChange={handleChange}
+              // options={[
+              //   { value: "disabled", label: "Assignee", disabled: true },
+              //   { value: 0, label: "Jerome Bell" },
+              //   { value: 1, label: "Robert Fox" },
+              //   { value: 2, label: "Marvin McKinney" },
+              // ]}
+            >
+              <Option className="wrapperStyle" value="option1">
+                {/* <div className="wrapperStyle"> */}
+                <Calendar
+                  fullscreen={false}
+                  value={value}
+                  onSelect={onSelect}
+                  onPanelChange={onPanelChange}
+                />
+                {/* </div> */}
+              </Option>
+            </Select>
+
+            <div className="invalid-feedback">{errors.dueDate?.message}</div>
+          </div>
+          {/* <div className="form-group">
             <input
               type="text"
               {...register("assigneeId")}
@@ -136,25 +225,7 @@ const ControlsContainer = () => {
               }`}
             />
             <div className="invalid-feedback">{errors.assigneeId?.message}</div>
-          </div>
-
-          <div className="form-group">
-            <input
-              type="password"
-              {...register("tags")}
-              className={`form-control ${errors.tags ? "is-invalid" : ""}`}
-            />
-            <div className="invalid-feedback">{errors.tags?.message}</div>
-          </div>
-
-          <div className="form-group">
-            <input
-              type="password"
-              {...register("dueDate")}
-              className={`form-control ${errors.dueDate ? "is-invalid" : ""}`}
-            />
-            <div className="invalid-feedback">{errors.dueDate?.message}</div>
-          </div>
+          </div> */}
 
           <div className="form-group">
             <button type="submit" className="btn btn-primary">
