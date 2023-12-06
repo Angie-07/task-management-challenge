@@ -1,64 +1,35 @@
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
-import type { Dayjs } from "dayjs";
-import dayjs from "dayjs";
 import {
   AppstoreOutlined,
   MenuOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
-import {
-  Button,
-  Calendar,
-  Checkbox,
-  DatePicker,
-  DatePickerProps,
-  Flex,
-  Modal,
-  Select,
-} from "antd";
+import { Button, DatePicker, Flex, Modal, Select, Tag } from "antd";
 import { useState } from "react";
 import styled from "styled-components";
+import type { CustomTagProps } from "rc-select/lib/BaseSelect";
 import {
   PointEstimate,
-  Task,
   TaskTag,
   User,
-  UserType,
   Status,
   CreateTaskInput,
 } from "../../shared/schema/schema";
-
-const { Option } = Select;
+import { ADD_TASK } from "../../shared/services/mutations";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_TASKS, GET_USERS } from "../../shared/services/queries";
 
 const ControlsContainer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [value, setValue] = useState(() => dayjs("2017-01-25"));
-  const [selectedValue, setSelectedValue] = useState(() => dayjs("2017-01-25"));
-  // const { register, handleSubmit, errors } = useForm();
-
-  const onSelect = (newValue: Dayjs) => {
-    setValue(newValue);
-    setSelectedValue(newValue);
-  };
-
-  const onPanelChange = (newValue: Dayjs) => {
-    setValue(newValue);
-  };
+  const [users, setUsers] = useState<Array<User>>([]);
 
   const showModal = () => {
     setIsModalOpen(true);
   };
   const handleCancel = () => {
     setIsModalOpen(false);
-  };
-  const handleChange = (value: string) => {
-    console.log(`valor ${value}`);
-  };
-
-  const onChange: DatePickerProps["onChange"] = (date, dateString) => {
-    console.log(date, dateString);
   };
 
   const validationSchema: Yup.ObjectSchema<CreateTaskInput> =
@@ -75,31 +46,105 @@ const ControlsContainer = () => {
         .required(),
     });
 
+  const optionsUsers = users.map((user) => {
+    return {
+      value: user.id,
+      label: user.fullName,
+    };
+  });
+
+  const pointEstimateOptions = Object.entries(PointEstimate).map(
+    ([key, value]) => ({
+      value: value,
+      label:
+        key === "ZERO"
+          ? "0 points"
+          : key === "ONE"
+          ? "1 point"
+          : key === "TWO"
+          ? "2 points"
+          : key === "FOUR"
+          ? "4 points"
+          : key === "EIGHT"
+          ? "8 points"
+          : key + "points",
+    })
+  );
+
+  type TaskTagKey = keyof typeof TaskTag;
+  const taskTagOptions = Object.keys(TaskTag).map((key) => ({
+    value: TaskTag[key as TaskTagKey],
+    label: key,
+  }));
+
+  const tagRender = (props: CustomTagProps) => {
+    const { label, closable, onClose } = props;
+    const onPreventMouseDown = (event: React.MouseEvent<HTMLSpanElement>) => {
+      event.preventDefault();
+      event.stopPropagation();
+    };
+    return (
+      <Tag
+        color="warning"
+        onMouseDown={onPreventMouseDown}
+        closable={closable}
+        onClose={onClose}
+        style={{ marginRight: 3 }}
+      >
+        {label}
+      </Tag>
+    );
+  };
+
   const {
-    register,
-    handleSubmit,
-    reset,
     control,
+    setError,
+    getValues,
+    reset,
     formState: { errors },
   } = useForm<CreateTaskInput>({
     resolver: yupResolver(validationSchema),
   });
 
-  const onSubmit = (data: CreateTaskInput) => {
-    console.log(JSON.stringify(data, null, 2));
+  const onSubmit = () => {
+    addTask({ variables: { input: { ...getValues(), status: Status.TODO } } });
   };
+
+  useQuery(GET_USERS, {
+    onCompleted: (data) => {
+      setUsers(data.users ?? []);
+    },
+  });
+
+  const handleSave = () => {
+    try {
+      onSubmit();
+      reset();
+      handleCancel();
+    } catch (error) {
+      console.error("Error al enviar el formulario:", error);
+      setError("name", {
+        type: "manual",
+        message: "Error personalizado para el campo name",
+      });
+    }
+  };
+
+  const [addTask, { loading, error }] = useMutation(ADD_TASK, {
+    refetchQueries: [
+      {
+        query: GET_TASKS,
+        variables: {
+          input: {},
+        },
+      },
+    ],
+  });
+  if (loading) return <div>Submitting...</div>;
+  if (error) return <div>`Submission error! ${error.message}`</div>;
 
   return (
     <StyledControlsContainer>
-      {/* <ConfigProvider
-        theme={{
-          token: {
-            colorBorderBg:"#da584b",
-            colorText: "#da584b",
-            colorBgTextActive:"#da584b"
-          },
-        }}
-      > */}
       <Flex gap="small" wrap="wrap">
         <Button className="btn-control">
           <MenuOutlined />
@@ -113,104 +158,140 @@ const ControlsContainer = () => {
       </Button>
       <Modal
         open={isModalOpen}
-        // okText="Create"
-        // onOk={handleOk}
         onCancel={handleCancel}
-        // okButtonProps={{ style: { backgroundColor: "#da584b" } }}
-        // cancelButtonProps={{
-        //   style: { border: "none", backgroundColor: "#393d41", color: "#ffff" },
-        // }}
         styles={{
           content: { backgroundColor: "#393d41" },
         }}
+        footer={[
+          <Button
+            style={{
+              backgroundColor: "#393d41",
+              border: "none",
+              color: "#ffff",
+            }}
+            key="cancel"
+            className="btn-cancel"
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>,
+          <Button
+            style={{
+              backgroundColor: "#da584b",
+              border: "none",
+              color: "#ffff",
+            }}
+            key="create"
+            type="primary"
+            onClick={handleSave}
+          >
+            Create
+          </Button>,
+        ]}
       >
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "15px" }}>
           <Controller
             control={control}
+            rules={{ required: "This field is required" }}
             name="name"
-            render={({ field: { onChange, onBlur, value, ref } }) => (
-              <input placeholder="Task title" onChange={onChange} />
+            render={({ field: { onChange } }) => (
+              <>
+                <input
+                  style={{
+                    marginTop: 30,
+                    height: 25,
+                    backgroundColor: "#393d41",
+                    border: "none",
+                    outline: "none",
+                    color: "#ffff",
+                    fontSize:'16px'
+                  }}
+                  placeholder="Task title"
+                  onChange={onChange}
+                />
+                {!!errors.name && errors.name.message}
+              </>
             )}
           />
-          <Controller
-            control={control}
-            name="pointEstimate"
-            render={({ field: { onChange, onBlur, value, ref } }) => (
-              <Select
-                onChange={onChange}
-                onBlur={onBlur}
-                style={{ width: 120 }}
-                options={[
-                  { value: "disabled", label: "PointEstimate", disabled: true },
-                  { value: 0, label: "1 Points" },
-                  { value: 1, label: "2 Points" },
-                  { value: 2, label: "4 Points" },
-                ]}
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="assigneeId"
-            render={({ field: { onChange, onBlur, value, ref } }) => (
-              <Select
-                onChange={onChange}
-                onBlur={onBlur}
-                style={{ width: 120 }}
-                options={[
-                  { value: "disabled", label: "assigneeId", disabled: true },
-                  { value: 0, label: "Jerome Bell" },
-                  { value: 1, label: "Robert Fox" },
-                  { value: 2, label: "Marvin McKinney" },
-                ]}
-              />
-            )}
-          />
-          <Controller
-            control={control}
-            name="tags"
-            render={({ field: { onChange, onBlur, value, ref } }) => (
-              <Select
-                style={{ width: 150 }}
-                defaultValue="Label"
-                suffixIcon=""
-                onChange={onChange}
-              >
-                <Option value="option1">
-                  <Checkbox value="option1" >Option 1</Checkbox>
-                </Option>
-                <Option value="option2">
-                  <Checkbox value="option2">Option 2</Checkbox>
-                </Option>
-                <Option value="option3">
-                  <Checkbox value="option3">Option 3</Checkbox>
-                </Option>
-              </Select>
-            )}
-          />
-          <Controller
-            control={control}
-            name="assigneeId"
-            render={({ field: { onChange, onBlur, value, ref } }) => (
-              <DatePicker onChange={onChange} />
-            )}
-          />
-          
-          {/* <div className="form-group">
-            <button type="submit" className="btn btn-primary">
-              Register
-            </button>
-            <button
-              type="button"
-              onClick={() => reset()}
-              className="btn btn-warning float-right"
-            >
-              Reset
-            </button>
-          </div> */}
-        </form>
+          <div style={{ display: "flex", gap: "10px" }}>
+            <Controller
+              control={control}
+              rules={{ required: "This field is required" }}
+              name="pointEstimate"
+              render={({ field: { onChange } }) => (
+                <>
+                  <StyledSelect
+                    onChange={onChange}
+                    defaultValue="Estimate"
+                    suffixIcon=""
+                    options={pointEstimateOptions}
+                    dropdownStyle={{
+                      background: "#393D41",
+                    }}
+                  />
+                  {!!errors.pointEstimate && errors.pointEstimate.message}
+                </>
+              )}
+            />
+            <Controller
+              control={control}
+              rules={{ required: "This field is required" }}
+              name="assigneeId"
+              render={({ field: { onChange, onBlur } }) => (
+                <>
+                  <StyledSelect
+                    onChange={onChange}
+                    defaultValue="Assignee"
+                    suffixIcon=""
+                    onBlur={onBlur}
+                    style={{ width: "25%" }}
+                    options={optionsUsers}
+                    dropdownStyle={{
+                      background: "#393D41",
+                    }}
+                  />
+                  {!!errors.assigneeId && errors.assigneeId.message}
+                </>
+              )}
+            />
+            <Controller
+              control={control}
+              name="tags"
+              render={({ field: { onChange, value } }) => (
+                <>
+                  <StyledSelect
+                    mode="multiple"
+                    suffixIcon=""
+                    placeholder="Label"
+                    tagRender={tagRender}
+                    value={value}
+                    options={taskTagOptions}
+                    onChange={onChange}
+                    style={{overflowY: 'auto'}}
+                  />
+                  {!!errors.tags && errors.tags.message}
+                </>
+              )}
+            />
+            <Controller
+              control={control}
+              name="dueDate"
+              render={({ field: { onChange } }) => (
+                <DatePicker
+                  style={{
+                    width: "25%",
+                    backgroundColor: "#94979a1a",
+                    border: "none",
+                    color:'red'
+                  }}
+                  onChange={onChange}
+                  placeholder="Due Date"
+                />
+              )}
+            />
+          </div>
+        </div>
       </Modal>
-      {/* </ConfigProvider> */}
     </StyledControlsContainer>
   );
 };
@@ -234,13 +315,15 @@ const StyledControlsContainer = styled.div`
     background-color: ${(props) => props.theme.colors.Primary4};
     color: ${(props) => props.theme.colors.Neutral1};
   }
+`;
 
-  .modal {
-    div {
-      background-color: ${(props) => props.theme.colors.Primary4};
-    }
-  }
-  .wrapperStyle {
-    width: 60px;
+const StyledSelect = styled(Select)`
+  width: 25%;
+  height: 35px;
+  background-color: #94979a1a !important;
+  div {
+    background-color: #94979a1a !important;
+    border: none !important;
+    color: ${(props) => props.theme.colors.Neutral1} !important;
   }
 `;

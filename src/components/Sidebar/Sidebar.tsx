@@ -1,28 +1,7 @@
 import { ConfigProvider, Menu } from "antd";
-import type { MenuProps } from "antd";
 import styled from "styled-components";
-import { AppstoreOutlined, MenuOutlined } from "@ant-design/icons";
 import Logo from "../../shared/assets/logo.jpeg";
-import { Link } from 'react-router-dom';
-
-type MenuItem = Required<MenuProps>["items"][number];
-
-function getItem(
-  label: React.ReactNode,
-  key?: React.Key | null,
-  icon?: React.ReactNode,
-): MenuItem {
-  return {
-    key,
-    icon,
-    label,
-  } as MenuItem;
-}
-
-// const items: MenuItem[] = [
-//   getItem("DASHBOARD", "1","/dashboard", <AppstoreOutlined />),
-//   getItem("MY TASK", "2","/my-task", <MenuOutlined />),
-// ];
+import { Link } from "react-router-dom";
 
 function Sidebar() {
   return (
@@ -43,10 +22,7 @@ function Sidebar() {
         <div className="img-container">
           <img src={Logo} alt="Ícono de Ravn" />
         </div>
-        {/* <Menu mode="inline" defaultSelectedKeys={["1"]} items={items}>
-          <Menu.Item key="1"/>
-        </Menu> */}
-        <Menu mode="inline"  >
+        <Menu mode="inline">
           <Menu.Item key="1">
             <Link to="/dashboard">Dashboard</Link>
           </Menu.Item>
@@ -75,10 +51,4 @@ const StyledSidebar = styled.div`
   .img-container {
     margin-top: 10px;
   }
-  /* .menu{
-    background-color: #2c2d33;
-    :active{
-      background-color: #e42828;
-    }
-  } */
 `;

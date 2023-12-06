@@ -1,6 +1,6 @@
 export interface CreateTaskInput {
   assigneeId?: string;
-  dueDate: String;
+  dueDate: string;
   name: string;
   pointEstimate: PointEstimate;
   status: Status;
@@ -8,14 +8,14 @@ export interface CreateTaskInput {
 }
 
 export interface UpdateTaskInput {
-  assigneeId?: string,
-  dueDate?: String,
-  id: string,
-  name?: string,
-  pointEstimate?: PointEstimate,
-  position?: number,
-  status?: Status,
-  tags: TaskTag[]
+  assigneeId?: string;
+  dueDate?: String;
+  id: string;
+  name?: string;
+  pointEstimate?: PointEstimate;
+  position?: number;
+  status?: Status;
+  tags: TaskTag[];
 }
 
 export interface DeleteTaskInput {
@@ -33,46 +33,46 @@ export interface FilterTaskInput {
 }
 
 export type Mutation = {
-  createTask(input: CreateTaskInput): Task,
-  deleteTask(input: DeleteTaskInput): Task,
-  updateTask(input: UpdateTaskInput): Task
-}
+  createTask(input: CreateTaskInput): Task;
+  deleteTask(input: DeleteTaskInput): Task;
+  updateTask(input: UpdateTaskInput): Task;
+};
 
 export type Query = {
-  profile: User,
-  tasks(input: FilterTaskInput): Task[],
-  users: User[]
-}
+  profile: User;
+  tasks(input: FilterTaskInput): Task[];
+  users: User[];
+};
 
 export type Task = {
-  assignee?: User,
-  createdAt: string,
-  creator: User,
-  dueDate: string,
-  id: string,
-  name: string,
-  pointEstimate: PointEstimate,
-  position: number,
-  status: Status,
-  tags: TaskTag[],
-}
+  assignee?: User;
+  createdAt: string;
+  creator: User;
+  dueDate: string;
+  id: string;
+  name: string;
+  pointEstimate: PointEstimate;
+  position: number;
+  status: Status;
+  tags: TaskTag[];
+};
 
 export type User = {
-  avatar?: string
-  createdAt: string
-  email: string
-  fullName: string
-  id: string,
-  type: UserType,
-  updatedAt: string
-}
+  avatar?: string;
+  createdAt: string;
+  email: string;
+  fullName: string;
+  id: string;
+  type: UserType;
+  updatedAt: string;
+};
 
 export enum Status {
   BACKLOG = "BACKLOG",
   CANCELLED = "CANCELLED",
   DONE = "DONE",
   IN_PROGRESS = "IN_PROGRESS",
-  TODO = "TODO"
+  TODO = "TODO",
 }
 
 export enum TaskTag {
@@ -80,12 +80,12 @@ export enum TaskTag {
   IOS = "IOS",
   NODE_JS = "NODE_JS",
   RAILS = "RAILS",
-  REACT = "REACT"
+  REACT = "REACT",
 }
 
 export enum UserType {
   ADMIN = "ADMIN",
-  CANDIDATE = "CANDIDATE"
+  CANDIDATE = "CANDIDATE",
 }
 
 export enum PointEstimate {
@@ -93,5 +93,5 @@ export enum PointEstimate {
   FOUR = "FOUR",
   ONE = "ONE",
   TWO = "TWO",
-  ZERO = "ZERO"
+  ZERO = "ZERO",
 }

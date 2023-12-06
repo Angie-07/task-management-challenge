@@ -1,31 +1,22 @@
 import styled from "styled-components";
 import ListTasks from "./ListTasks";
-import { useState } from "react";
-import { Task, User } from "../../../shared/schema/schema";
 import {
-  GET_PROFILE,
   GET_TASKS,
-  GET_USERS,
 } from "../../../shared/services/queries";
 import { useQuery } from "@apollo/client";
 
 const TasksCardContainer = () => {
-  const [tasks, setTasks] = useState<Array<Task>>([]);
-  const [users, setUsers] = useState<Array<User>>([]);
-
-  const { loading: tasksLoading, error: tasksError } = useQuery(GET_TASKS, {
+  const {
+    loading: tasksLoading,
+    error: tasksError,
+    data,
+  } = useQuery(GET_TASKS, {
     variables: {
       input: {},
     },
-    onCompleted: (data) => {
-      setTasks(data.tasks ?? []);
-    },
   });
-  const { loading: usersLoading, error: usersError } = useQuery(GET_USERS, {
-    onCompleted: (data) => {
-      setUsers(data.users ?? []);
-    },
-  });
+
+  const tasks = data?.tasks ?? [];
 
   return (
     <StyledTaskCardContainer>

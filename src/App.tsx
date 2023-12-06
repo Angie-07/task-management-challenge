@@ -32,5 +32,4 @@ function App() {
 export default App;
 
 const StyledApp = styled.div`
-  /* background-color: ${(props) => props.theme.colors.Neutral5}; */
 `;

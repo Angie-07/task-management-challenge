@@ -61,15 +61,12 @@ const TaskComponent = ({ task }: TasksComponentProps) => {
     return momentString.format("D MMMM, YYYY");
   };
 
-
   return (
     <StyledTask>
       <Flex className="flex">
         <h1 className="task-title">{task.name}</h1>
         <Dropdown menu={{ items }} placement="bottomRight" className="drop">
-          {/* <Button> */}
           <EllipsisOutlined />
-          {/* </Button> */}
         </Dropdown>
       </Flex>
       <Flex className="flex">
@@ -79,15 +76,35 @@ const TaskComponent = ({ task }: TasksComponentProps) => {
           <p>{date(task.dueDate)}</p>
         </div>
       </Flex>
-      <Flex className="flex-tag">{
-        task.tags.map((item)=> [
-        (item==="ANDROID") ? <Tag key="1" className="android">{item}</Tag> : null,
-        (item==="IOS") ? <Tag key="2" className="ios">{item}</Tag> : null,
-        (item==="NODE_JS") ? <Tag key="3" className="node">{item}</Tag> : null,
-        (item==="RAILS") ? <Tag key="4" className="rails">{item}</Tag> : null,
-        (item==="REACT") ? <Tag key="5" className="react">{item}</Tag> : null,
-        ])
-      }</Flex>
+      <Flex className="flex-tag">
+        {task.tags.map((item) => [
+          item === "ANDROID" ? (
+            <Tag key="1" className="android">
+              {item}
+            </Tag>
+          ) : null,
+          item === "IOS" ? (
+            <Tag key="2" className="ios">
+              {item}
+            </Tag>
+          ) : null,
+          item === "NODE_JS" ? (
+            <Tag key="3" className="node">
+              {item}
+            </Tag>
+          ) : null,
+          item === "RAILS" ? (
+            <Tag key="4" className="rails">
+              {item}
+            </Tag>
+          ) : null,
+          item === "REACT" ? (
+            <Tag key="5" className="react">
+              {item}
+            </Tag>
+          ) : null,
+        ])}
+      </Flex>
       <Flex className="flex">
         <div className="avatar">
           <img src={Avatar} alt="Avatar" />
@@ -200,5 +217,4 @@ const StyledTask = styled(Flex)`
     flex-direction: row;
     gap: 8px;
   }
-
 `;

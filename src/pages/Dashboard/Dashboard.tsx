@@ -12,7 +12,6 @@ const Dashboard = () => {
         <SearchTask />
         <ControlsContainer />
         <TasksCardContainer />
-        {/* <MainContainer /> */}
       </div>
     </StyledDashboard>
   );

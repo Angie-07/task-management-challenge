@@ -1,9 +1,9 @@
 import { gql } from "@apollo/client";
 
 export const ADD_TASK = gql`
-  mutation AddTodo($input: CreateTaskInput!) {
-    addTodo(input: $input) {
-        assignee {
+  mutation createTask($input: CreateTaskInput!) {
+    createTask(input: $input) {
+      assignee {
         avatar
         createdAt
         email
