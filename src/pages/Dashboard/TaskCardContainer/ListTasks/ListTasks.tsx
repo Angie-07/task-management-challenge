@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Task } from "../../../../shared/schema/schema";
-import TaskComponent from "../Task/TaskComponent";
+import TaskComponent from "../TaskComponent/TaskComponent";
 
 type ListTasksProps = {
   title: string;

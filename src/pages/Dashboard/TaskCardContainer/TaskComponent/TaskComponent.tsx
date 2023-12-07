@@ -11,38 +11,44 @@ import {
 } from "@ant-design/icons";
 import styled from "styled-components";
 import Avatar from "../../../../shared/assets/avatar.jpg";
-import { PointEstimate, Task, TaskTag } from "../../../../shared/schema/schema";
+import {
+  DeleteTaskInput,
+  PointEstimate,
+  Task,
+  TaskTag,
+} from "../../../../shared/schema/schema";
+import { DELETE_TASK } from "../../../../shared/services/mutations";
+import { useMutation } from "@apollo/client";
+import { GET_TASKS } from "../../../../shared/services/queries";
 
 type TasksComponentProps = {
   task: Task;
 };
 
 const TaskComponent = ({ task }: TasksComponentProps) => {
+  const onDelete = (id: DeleteTaskInput) => {
+    deleteTask({ variables: { input: id } });
+  };
+  const [deleteTask, { loading, error }] = useMutation(DELETE_TASK, {
+    refetchQueries: [
+      {
+        query: GET_TASKS,
+        variables: {
+          input: {},
+        },
+      },
+    ],
+  });
+
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.antgroup.com"
-        >
-          Edit
-        </a>
-      ),
+      label: <a>Edit</a>,
       icon: <EditOutlined />,
     },
     {
       key: "2",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.aliyun.com"
-        >
-          Delete
-        </a>
-      ),
+      label: <a onClick={() => onDelete({ id: task.id })}>Delete</a>,
       icon: <DeleteOutlined />,
     },
   ];
