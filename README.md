@@ -4,6 +4,9 @@
 
 This application, created with *create-react-app*, is a tool for managing tasks. It allows users to easily add, modify, and delete tasks efficiently.
 
+![image](https://github.com/Angie-07/task-management-challenge/assets/138353429/c439d9b0-f9d2-43b9-9b3e-8a99dbc06064)
+
+
 ## Project Structure
 
 ```
