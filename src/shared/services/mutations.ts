@@ -33,7 +33,7 @@ export const ADD_TASK = gql`
   }
 `;
 
-export const UPDATE = gql`
+export const UPDATE_TASK = gql`
   mutation updateTask($input: UpdateTaskInput!) {
     updateTask(input: $input) {
       assignee {

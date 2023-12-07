@@ -9,7 +9,7 @@ export interface CreateTaskInput {
 
 export interface UpdateTaskInput {
   assigneeId?: string;
-  dueDate?: String;
+  dueDate?: string;
   id: string;
   name?: string;
   pointEstimate?: PointEstimate;

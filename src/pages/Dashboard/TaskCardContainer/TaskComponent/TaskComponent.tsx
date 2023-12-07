@@ -1,5 +1,5 @@
 import moment from "moment";
-import { Flex, Dropdown, MenuProps, Tag } from "antd";
+import { Flex, Dropdown, MenuProps, Tag, Modal, Button } from "antd";
 import {
   EllipsisOutlined,
   EditOutlined,
@@ -14,22 +14,77 @@ import Avatar from "../../../../shared/assets/avatar.jpg";
 import {
   DeleteTaskInput,
   PointEstimate,
+  Status,
   Task,
   TaskTag,
+  UpdateTaskInput,
+  User,
 } from "../../../../shared/schema/schema";
-import { DELETE_TASK } from "../../../../shared/services/mutations";
-import { useMutation } from "@apollo/client";
-import { GET_TASKS } from "../../../../shared/services/queries";
+import {
+  DELETE_TASK,
+  UPDATE_TASK,
+} from "../../../../shared/services/mutations";
+import { useMutation, useQuery } from "@apollo/client";
+import { GET_TASKS, GET_USERS } from "../../../../shared/services/queries";
+import { FormProvider, useForm } from "react-hook-form";
+import TaskForm from "../../../../components/ControlsContainer/TaskForm";
+import { useState } from "react";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 
 type TasksComponentProps = {
   task: Task;
 };
 
 const TaskComponent = ({ task }: TasksComponentProps) => {
-  const onDelete = (id: DeleteTaskInput) => {
-    deleteTask({ variables: { input: id } });
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [users, setUsers] = useState<Array<User>>([]);
+
+  const showModal = () => {
+    setIsModalOpen(true);
   };
-  const [deleteTask, { loading, error }] = useMutation(DELETE_TASK, {
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const validationSchema: Yup.ObjectSchema<UpdateTaskInput> =
+    Yup.object().shape({
+      id: Yup.string().required(),
+      position: Yup.number().optional(),
+      assigneeId: Yup.string(),
+      dueDate: Yup.string().required(),
+      name: Yup.string().required(),
+      pointEstimate: Yup.string()
+        .oneOf(Object.values(PointEstimate))
+        .required(),
+      status: Yup.string().oneOf(Object.values(Status)).required(),
+      tags: Yup.array()
+        .of(Yup.string().required().oneOf(Object.values(TaskTag)))
+        .required(),
+    });
+
+  const createUseFormContext = useForm<UpdateTaskInput>({
+    resolver: yupResolver(validationSchema),
+    defaultValues: { ...task, assigneeId: task.assignee?.id },
+  });
+
+  const { setError, getValues, reset } = createUseFormContext;
+
+  const handleSave = () => {
+    try {
+      onEdit();
+      reset();
+      handleCancel();
+    } catch (error) {
+      console.error("Error al enviar el formulario:", error);
+      setError("name", {
+        type: "manual",
+        message: "Error personalizado para el campo name",
+      });
+    }
+  };
+
+  const [updateTask] = useMutation(UPDATE_TASK, {
     refetchQueries: [
       {
         query: GET_TASKS,
@@ -40,10 +95,37 @@ const TaskComponent = ({ task }: TasksComponentProps) => {
     ],
   });
 
+  const [deleteTask] = useMutation(DELETE_TASK, {
+    refetchQueries: [
+      {
+        query: GET_TASKS,
+        variables: {
+          input: {},
+        },
+      },
+    ],
+  });
+
+  const onDelete = (input: DeleteTaskInput) => {
+    deleteTask({ variables: { input: input } });
+  };
+
+  const onEdit = () => {
+    updateTask({
+      variables: { input: { ...getValues(), status: task.status } },
+    });
+  };
+
+  useQuery(GET_USERS, {
+    onCompleted: (data) => {
+      setUsers(data.users ?? []);
+    },
+  });
+
   const items: MenuProps["items"] = [
     {
       key: "1",
-      label: <a>Edit</a>,
+      label: <a onClick={() => showModal()}>Edit</a>,
       icon: <EditOutlined />,
     },
     {
@@ -123,6 +205,44 @@ const TaskComponent = ({ task }: TasksComponentProps) => {
           <CommentOutlined />
         </div>
       </Flex>
+
+      <Modal
+        open={isModalOpen}
+        onCancel={handleCancel}
+        styles={{
+          content: { backgroundColor: "#393d41" },
+        }}
+        footer={[
+          <Button
+            style={{
+              backgroundColor: "#393d41",
+              border: "none",
+              color: "#ffff",
+            }}
+            key="cancel"
+            className="btn-cancel"
+            onClick={handleCancel}
+          >
+            Cancel
+          </Button>,
+          <Button
+            style={{
+              backgroundColor: "#da584b",
+              border: "none",
+              color: "#ffff",
+            }}
+            key="create"
+            type="primary"
+            onClick={handleSave}
+          >
+            Update
+          </Button>,
+        ]}
+      >
+        <FormProvider {...createUseFormContext}>
+          <TaskForm users={users} />
+        </FormProvider>
+      </Modal>
     </StyledTask>
   );
 };
