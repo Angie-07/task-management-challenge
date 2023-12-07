@@ -7,7 +7,6 @@ import { useQuery } from "@apollo/client";
 const TaskTable = () => {
   const [tasks, setTasks] = useState<Array<Task>>([]);
   const [users, setUsers] = useState<Array<User>>([]);
-  // const [profile, setProfile] = useState<Array<Profile>>([]);
 
   const { loading: tasksLoading, error: tasksError } = useQuery(GET_TASKS, {
     variables:{
@@ -17,16 +16,11 @@ const TaskTable = () => {
       setTasks(data.tasks ?? []);
     },
   });
-  const { loading: usersLoading, error: usersError } = useQuery(GET_USERS, {
-    onCompleted: (data) => {
-      setUsers(data.users ?? []);
-    },
-  });
-  // const {loading:profileLoading, error:profileError} = useQuery(GET_PROFILE,{
+  // const { loading: usersLoading, error: usersError } = useQuery(GET_USERS, {
   //   onCompleted: (data) => {
-  //     setProfile(data.profile ?? []);
+  //     setUsers(data.users ?? []);
   //   },
-  // })
+  // });
 
   return (
     <StyledTaskTable>
@@ -40,16 +34,16 @@ const TaskTable = () => {
         </tr>
       </thead>
       <tbody>
-        {!!usersLoading && (
+        {!!tasksLoading && (
           <tr><td>Cargando</td></tr>
         )}
-        {!!usersError &&(
+        {!!tasksError &&(
           <tr><td>Error</td></tr>
         )}
-        {!usersLoading && !usersError&&(
-          <tr>{users.map(({id, fullName})=>{
+        {!tasksLoading && !tasksError&&(
+          <tr>{tasks.map(({id, name})=>{
             return(
-              <td key={id}>{fullName}</td>
+              <td key={id}>{name}</td>
             )
           })}</tr>
         )}  
@@ -61,7 +55,7 @@ const TaskTable = () => {
 export default TaskTable;
 
 const StyledTaskTable = styled.table`
-  width: 80%;
+  width: 100%;
   border: 1px white solid;
   color: ${(props) => props.theme.colors.Neutral1};
 `;
