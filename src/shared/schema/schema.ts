@@ -45,6 +45,7 @@ export type Query = {
 };
 
 export type Task = {
+  __typename?: string;
   assignee?: User;
   createdAt: string;
   creator: User;

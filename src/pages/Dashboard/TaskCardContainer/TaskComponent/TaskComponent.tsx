@@ -111,8 +111,21 @@ const TaskComponent = ({ task }: TasksComponentProps) => {
   };
 
   const onEdit = () => {
+    const { id, tags, assigneeId, name, dueDate, pointEstimate, position } =
+      getValues();
     updateTask({
-      variables: { input: { ...getValues(), status: task.status } },
+      variables: {
+        input: {
+          id,
+          tags,
+          assigneeId,
+          name,
+          dueDate,
+          pointEstimate,
+          position,
+          status: task.status,
+        },
+      },
     });
   };
 

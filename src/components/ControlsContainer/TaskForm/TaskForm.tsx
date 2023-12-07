@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { PointEstimate, TaskTag, User } from "../../../shared/schema/schema";
 import type { CustomTagProps } from "rc-select/lib/BaseSelect";
 import moment from "moment";
+import dayjs from "dayjs";
 
 type TaskFormProps = {
   users: User[];
@@ -106,6 +107,7 @@ const TaskForm = ({ users }: TaskFormProps) => {
                 options={pointEstimateOptions}
                 dropdownStyle={{
                   background: "#393D41",
+                  color: "#ffff",
                 }}
               />
               {!!errors.pointEstimate && errors.pointEstimate.message}
@@ -146,7 +148,7 @@ const TaskForm = ({ users }: TaskFormProps) => {
                 value={value}
                 options={taskTagOptions}
                 onChange={onChange}
-                style={{ overflowY: "auto" }}
+                style={{ overflowY: "auto", color: "#fff", }}
               />
               {!!errors.tags && errors.tags.message}
             </>
@@ -165,7 +167,7 @@ const TaskForm = ({ users }: TaskFormProps) => {
               }}
               onChange={onChange}
               placeholder="Due Date"
-              value={value}
+              value={value ? dayjs(value) : null}
             />
           )}
         />
