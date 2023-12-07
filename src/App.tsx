@@ -17,7 +17,7 @@ function App() {
           <BrowserRouter>
             <Routes>
               {/* <Route path="/" element={<Home />} /> */}
-              <Route path="/dashboard" element={<Dashboard/>} />
+              <Route path="/" element={<Dashboard/>} />
               <Route path="/my-task" element={<MyTask/>} />
               <Route path="/not-found" element={<NotFound />} />
               <Route path="/error-page" element={<ErrorPage />} />

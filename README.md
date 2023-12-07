@@ -1,52 +1,103 @@
-# TASK MANAGEMENT CHALLENGE
+# My Task App
 
+## Project Description
 
+This application, created with *create-react-app*, is a tool for managing tasks. It allows users to easily add, modify, and delete tasks efficiently.
 
-# Getting Started with Create React App
+## Project Structure
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+```
+└── 📁src
+    └── App.css
+    └── App.test.tsx
+    └── App.tsx
+    └── 📁components
+        └── 📁ControlsContainer
+            └── ControlsContainer.tsx
+            └── index.tsx
+            └── 📁TaskForm
+                └── index.tsx
+                └── TaskForm.tsx
+        └── 📁SearchTask
+            └── index.tsx
+            └── SearchTask.tsx
+        └── 📁Sidebar
+            └── index.tsx
+            └── Sidebar.tsx
+    └── index.css
+    └── index.tsx
+    └── 📁pages
+        └── 📁Dashboard
+            └── Dashboard.tsx
+            └── index.tsx
+            └── 📁TaskCardContainer
+                └── index.tsx
+                └── 📁ListTasks
+                    └── index.tsx
+                    └── ListTasks.tsx
+                └── 📁TaskComponent
+                    └── index.tsx
+                    └── TaskComponent.tsx
+                └── TasksCardContainer.tsx
+        └── 📁ErrorPage
+            └── ErrorPage.tsx
+            └── index.tsx
+        └── 📁MyTask
+            └── index.tsx
+            └── MyTask.tsx
+            └── 📁TaskTableContainer
+                └── index.tsx
+                └── 📁TaskTable
+                    └── index.tsx
+                    └── TaskTable.tsx
+                └── TaskTableContainer.tsx
+        └── 📁NotFound
+            └── index.tsx
+            └── NotFound.tsx
+    └── react-app-env.d.ts
+    └── reportWebVitals.ts
+    └── setupTests.ts
+    └── 📁shared
+        └── 📁api
+            └── api.ts
+            └── apolloClient.ts
+        └── 📁assets
+            └── avatar.jpg
+            └── logo.jpeg
+        └── 📁schema
+            └── schema.ts
+        └── 📁services
+            └── mutations.ts
+            └── queries.ts
+    └── 📁styles
+        └── coolTheme.ts
+        └── Theme.tsx
+    └── 📁types
+        └── styled.d.ts
+```
 
-## Available Scripts
+## Technological Justification
 
-In the project directory, you can run:
+- *React*: We chose React for its efficiency and flexibility in building interactive and dynamic user interfaces.
+    
+- *TypeScript*: Integrating TypeScript allows for more robust development by providing static typing, improving code readability, and reducing errors.
+    
+- *Styled Components*: We use Styled Components for styling, as it provides an elegant way to write CSS-in-JS, facilitating customization and code maintenance.
+    
+- *Ant Design*: Ant Design is incorporated to leverage its pre-built components and provide a consistent and appealing user interface.
+    
 
-### `npm start`
+## Technologies Used
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- React ![React](https://img.shields.io/badge/-React-61DAFB?logo=react&logoColor=white)
+- TypeScript ![TypeScript](https://img.shields.io/badge/-TypeScript-3178C6?logo=typescript&logoColor=white)
+- Styled Components ![Styled Components](https://img.shields.io/badge/-Styled_Components-DB7093?logo=styled-components&logoColor=white)
+- Ant Design ![Ant Design](https://img.shields.io/badge/-Ant_Design-0170FE?logo=ant-design&logoColor=white)
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## Dependencies
 
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-# Task Management Challenge 
+- *@apollo/client*: State management and server communication through GraphQL.
+- *react-router-dom*: Routing to navigate between different pages of the application.
+- *@types/react-router-dom*: Typings for react-router-dom.
+- *graphql*: Syntax and execution of GraphQL queries.
+- *@types/graphql*: Typings for GraphQL.
